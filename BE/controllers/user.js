@@ -1,7 +1,7 @@
-const User = require('../models/user');
-const { check, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
+const User = require("../models/user");
+const { check, validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt");
 
 exports.signup = (req, res) => {
 
@@ -17,7 +17,7 @@ exports.signup = (req, res) => {
   user.save((err, user) => {
     if (err) {
       return res.status(400).json({
-        err: 'NOT able to save user in DB'
+        err: "NOT able to save user in DB"
       });
     }
     res.json({
@@ -49,7 +49,7 @@ exports.signin = (req, res) => {
 
     if (!user.authenticate(password)) {
       return res.status(401).json({
-        error: 'Email and password do not match'
+        error: "Email and password do not match"
       });
     }
 
@@ -72,19 +72,37 @@ exports.signout = (req, res) => {
   });
 };
 
+exports.getUserById = (req, res, next, id) => {
+  User.findById(id).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "No user was found in DB"
+      });
+    }
+    req.profile = user;
+    next();
+  });
+};
+
+exports.getUser = (req, res) => {
+  req.profile.salt = undefined;
+  req.profile.encry_password = undefined;
+  return res.json(req.profile);
+};
+
 // Protected Routes
 exports.isSignedIn = expressJwt({
   secret: process.env.SECRET,
-  userProperty: 'auth'
+  userProperty: "auth"
 });
 
 // Custom Middlewares
 exports.isAuthenticated = (req, res, next) => {
-  let checker = req.profile && req.auth && req.profile._id === req.auth._id;
+  let checker = req.profile && req.auth && req.profile._id == req.auth._id;
 
   if (!checker) {
     return res.status(403).json({
-      error: 'ACCESS DENIED'
+      error: "ACCESS DENIED"
     });
   }
   next();
