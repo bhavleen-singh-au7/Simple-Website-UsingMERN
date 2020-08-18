@@ -25,5 +25,8 @@ yarn-error.log*
 # my addtion
 playground.js
 package-lock.json
+
+# dotenv environment variables file
 .env
+.env.test
 
