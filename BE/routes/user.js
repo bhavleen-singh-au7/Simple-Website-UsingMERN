@@ -1,8 +1,7 @@
 const express = require('express');
-const { Router } = require("express");
+const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const { signup, signin, signout } = require('../controllers/user');
-const router = express.Router();
 
 router.post("/signup", [
   check("name", "name should be at least 3 characters").isLength({ min: 3 }),

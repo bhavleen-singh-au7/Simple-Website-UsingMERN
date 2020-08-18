@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const app = express();
 
+// Routes
 const userRoutes = require("./routes/user");
 
 // DB Connection
