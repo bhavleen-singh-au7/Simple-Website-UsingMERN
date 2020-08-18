@@ -25,3 +25,5 @@ yarn-error.log*
 # my addtion
 playground.js
 package-lock.json
+.env
+
