@@ -9,7 +9,7 @@ function Input(props) {
       name={props.name}
       id={props.id}
       placeholder={props.placeholder}
-      value={props.Value}
+      value={props.value}
       onChange={props.onChange}
       autoComplete="off"
       autoCapitalize="on"

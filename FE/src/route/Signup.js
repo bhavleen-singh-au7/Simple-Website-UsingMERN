@@ -12,11 +12,16 @@ const Signup = () => {
     email: "",
     phoneNumber: "",
     password: "",
+    confirmPass: "",
     error: "",
     success: false
   });
 
-  const { name, email, phoneNumber, password, error, success } = values;
+  const { name, email, phoneNumber, password, confirmPass, error, success } = values;
+
+  const handleChange = name => event => {
+    setValues({ ...values, error: false, [name]: event.target.value });
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -40,19 +45,16 @@ const Signup = () => {
       .catch(console.log("Error in signup"));
   };
 
-  const handleChange = name => event => {
-    setValues({ ...values, error: false, [name]: event.target.value });
-  };
-
   const SignUpForm = () => {
     return (
-      <form onSubmit={handleSubmit} className="mt-2">
+      <form className="mt-2">
         <div className="customBorder my-3 py-3">
           <div className="form-group font-weight-bold px-4">
             <label htmlFor="name">Name</label>
             <Input
               type="text"
               id="name"
+              value={name}
               placeholder="Enter Name"
               onChange={handleChange("name")}
             />
@@ -62,8 +64,8 @@ const Signup = () => {
             <label htmlFor="email">Email</label>
             <Input
               type="email"
-              name="email"
               id="email"
+              value={email}
               placeholder="Enter Email"
               onChange={handleChange("email")}
             />
@@ -71,14 +73,14 @@ const Signup = () => {
           </div>
 
           <div className="form-group font-weight-bold px-4">
-            <label htmlFor="number">Phone Number</label>
+            <label htmlFor="phoneNumber">Phone Number</label>
             <Input
               type="text"
-              name="number"
-              id="number"
+              id="phoneNumber"
+              value={phoneNumber}
               placeholder="9911223344"
               pattern="[0-9]{10}"
-              onChange={handleChange("number")}
+              onChange={handleChange("phoneNumber")}
             />
             <small className="form-text text-muted">Only Numric Values allowed with length of 10 characters.</small>
           </div>
@@ -87,8 +89,8 @@ const Signup = () => {
             <label htmlFor="password">Password</label>
             <Input
               type="password"
-              name="password"
               id="password"
+              value={password}
               placeholder="Enter Strong Password"
               onChange={handleChange("password")}
             />
@@ -96,19 +98,19 @@ const Signup = () => {
           </div>
 
           <div className="form-group font-weight-bold px-4">
-            <label htmlFor="confirm-pass">Confirm Password</label>
+            <label htmlFor="confirmPass">Confirm Password</label>
             <Input
               type="password"
-              name="confirm-pass"
-              id="confirm-pass"
+              id="confirmPass"
+              value={confirmPass}
               placeholder="Enter Same Password"
-              onChange={handleChange("confirm-pass")}
             />
           </div>
 
           <div className="text-center py-2 px-4">
             <Button
               className="btn btn-outline-primary btn-block"
+              submitHandler={handleSubmit}
               btnName="Sign Up"
             />
           </div>
@@ -117,9 +119,36 @@ const Signup = () => {
     );
   };
 
+  const successMessage = () => {
+    return (
+      <div className='my-3 w-50 mx-auto'>
+        <div
+          className='alert alert-success'
+          style={{ display: success ? "" : 'none' }}>
+          <strong>New Account Created Successfully. Please <Link to='/signin'>Login Here</Link>.</strong>
+        </div>
+      </div>
+    );
+  };
+
+  const errorMessage = () => {
+    return (
+      <div className='my-3 w-50 mx-auto'>
+        <div
+          className='alert alert-danger'
+          style={{ display: error ? "" : 'none' }}>
+          {<strong>{error}</strong>}
+        </div>
+      </div>
+    );
+  };
+
+
   return (
     <App>
-      <SignUpForm />
+      {successMessage()}
+      {errorMessage()}
+      {SignUpForm()}
     </App>
   );
 };
