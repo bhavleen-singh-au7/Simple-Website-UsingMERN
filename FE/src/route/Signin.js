@@ -1,29 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import App from "../App";
-import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { signin, isAuthenticated, authenticate } from "../backendAuth";
+import loadingImg from "../img/spinner.gif";
 
 const Signin = () => {
 
-  const handleSubmit = () => {
-    console.log('hello');
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+    error: "",
+    loading: false,
+    didRedirect: false
+  });
+
+  const { email, password, error, loading, didRedirect } = values;
+  const { user } = isAuthenticated();
+
+  const handleChange = name => event => {
+    setValues({ ...values, error: false, [name]: event.target.value });
   };
 
-  const handleChange = () => {
-    console.log('dont change');
+  const handleSubmit = event => {
+    event.preventDefault();
+    setValues({ ...values, error: false, loading: true });
+    signin({ email, password })
+      .then(data => {
+        if (data?.error) {
+          setValues({ ...values, error: data?.error, loading: false });
+        } else {
+          authenticate(data, () => {
+            setValues({
+              ...values,
+              didRedirect: true
+            });
+          });
+        }
+      })
+      .catch(console.log('SignIn request Failed'));
+  };
+
+  const performRedirect = () => {
+    if (didRedirect) {
+      if (user) {
+        return <p>Redirect to dashboard</p>;
+      }
+    }
+    if (isAuthenticated()) {
+      return <Redirect to="/" />;
+    }
   };
 
   const SignInForm = () => {
     return (
-      <form onSubmit={handleSubmit} className='mt-3'>
+      <form className='mt-3'>
         <div className="customBorder py-3 my-5">
           <div className="form-group font-weight-bold px-4">
             <label htmlFor="email">Email</label>
             <Input
               type="email"
-              name="email"
               id="email"
+              value={email}
               onChange={handleChange('email')}
               placeholder="Enter Email"
             />
@@ -33,8 +72,8 @@ const Signin = () => {
             <label htmlFor="password">Password</label>
             <Input
               type="password"
-              name="password"
               id="password"
+              value={password}
               onChange={handleChange('password')} placeholder="Enter Password"
             />
             <small style={{ visibility: 'hidden' }} className="form-text text-muted">Enter combination of atleast 6 characters.</small>
@@ -43,6 +82,7 @@ const Signin = () => {
           <div className="text-center py-2 px-4">
             <Button
               className="btn btn-outline-primary btn-block"
+              submitHandler={handleSubmit}
               btnName="Sign In"
             />
           </div>
@@ -51,9 +91,35 @@ const Signin = () => {
     );
   };
 
+  const loadingMessage = () => {
+    return (
+      loading && (
+        <div className='spinner'>
+          <img src={loadingImg} alt="loading" />
+        </div>
+      )
+    );
+  };
+
+  const errorMessage = () => {
+    return (
+      <div className='my-3 w-50 mx-auto'>
+        <div
+          className='alert alert-danger'
+          style={{ display: error ? "" : 'none' }}>
+          <strong>{error}</strong>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <App>
+      {loadingMessage()}
+      {errorMessage()}
       {SignInForm()}
+      {performRedirect()}
+      <p className="bg-warning text-center">{JSON.stringify(values)}</p>
     </App>
   );
 };
