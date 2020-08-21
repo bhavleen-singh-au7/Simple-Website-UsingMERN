@@ -137,7 +137,7 @@ const Signup = () => {
         <div
           className='alert alert-danger'
           style={{ display: error ? "" : 'none' }}>
-          {<strong>{error}</strong>}
+          <strong>{error}</strong>
         </div>
       </div>
     );
