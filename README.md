@@ -1,6 +1,16 @@
-Learned decent amount of React topics, now I'm moving further taking my backend knowledge as well as FrontEnd knowledge and building a simple MERN stack website, which will be consisting of following pages:
-- Home page 
-- Signin Page
-- Signup Page
-- User Dashboard Page (which will be protected)
-- A Navbar to switch between the routes
+# Mini Medium Clone
+
+## Tech Used
+- React
+- Redux
+- ExpressJs
+- NodeJs
+- Mongodb (as Database).
+
+## Features
+- A home page where all posts will be listed.
+- Logged in user can add posts.
+- Logged in user can like the post.
+- Logged in user can delete his posts.
+- Logged in user can comment on the post.
+- Comments should be displayed with the posts.
